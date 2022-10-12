@@ -7,6 +7,7 @@ const authMiddleware = require("../middlewares/auth-middleware");
 //1. 게시글 작성
 router.post("/", authMiddleware, async (req, res) => {
     console.log(res.locals.users)
+
     const { title, content } = req.body;
     const { userId, nickname } = res.locals.users;
     // body에 작성할 user의 정보 및 게시물의 title, content를 포함해서 받아온다.
@@ -31,12 +32,26 @@ router.get("/", async (req, res) => {
 router.get("/like", authMiddleware, async (req, res) => {
     const { userId } = res.locals.users;
     
-    const postlike = await posts.findAll({
-        where: { userId },
-        order: ['likesCount']
+    //해당 유저가 좋아요 누른 게시글 postId 찾기
+    const postLike = await likes.findAll({
+        where: { userId: userId },
+        attributes: ['postId']
+    })
+   
+    //값만 가지는 배열 만들기
+    const postLikeNumber = postLike.map ((post) => {
+        return post.getDataValue("postId")
     })
 
-    res.json ({"data": postlike})
+    //좋아요 누른 postId와 동일한 게시글찾기
+    const postLikeList = await posts.findAll({
+        where: {
+            postId: postLikeNumber
+        },
+        order: [['likesCount', 'DESC']] // 좋아요 누른 수가 많은 것부터 내림차순으로
+    })
+
+    res.json ({"data": postLikeList})
 })
 
 //3. 게시글 상세보기
@@ -97,6 +112,8 @@ router.put("/:postId/like", authMiddleware, async (req, res) => {
     const userlike = await likes.findOne({where: { postId,userId }})
     //좋어요DB에서 좋아요한 기록있는지 찾기
 
+    //좋아요한 기록이 없을경우 좋아요 게시글에 좋아요 카운트 추가 및 좋아요 기록 등록
+    //좋아요한 기록이 있는경우 좋아요 게시글에 좋아요 카운트 감소 및 좋아요 기록 삭제
     if (!userlike) {
 
         await postLikeOne.increment({likesCount: 1}, {where : { postId, userId }})
