@@ -27,11 +27,11 @@ router.post("/", async (req, res) => {
     const { nickname, password, confirmPassword } = req.body;
 
     const validId = await Joi.object().keys({
-        nickname : Joi.string().alphanum().min(3).max(30),
+        nickname : Joi.string().alphanum().min(3).max(30)
     })
 
     const validPw = await Joi.object().keys({
-        password : Joi.string().alphanum().min(4).invalid(`${nickname}`)
+        password : Joi.string().alphanum().min(4)
     })
    
 
@@ -58,17 +58,20 @@ router.post("/", async (req, res) => {
 
     try {
         await validId.validateAsync({nickname})
-
-        try {
-            await validPw.validateAsync({password})
-        }
-        catch (err) {
-            return res.status(400).send({"message": "비밀번호의 형식이 올바르지 않습니다"})
-        }
     }
     catch (err) {
         return res.status(400).send({"message": "닉네임의 형식이 올바르지 않습니다."})
     } 
+    
+    try {
+        if (password.search(nickname) !== -1) {
+            return res.status(400).send({"message": "비밀번호에 닉네임과 같은값이 있습니다."})
+        }
+        await validPw.validateAsync({password})
+    }
+    catch (err) {
+        return res.status(400).send({"message": "비밀번호의 형식이 올바르지 않습니다"})
+    }
     
     await users.create({ nickname, password });
 
