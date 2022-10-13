@@ -40,7 +40,7 @@
     - 로그인 토큰에 해당하는 사용자가 좋아요 한 글에 한해서, 조회할 수 있게 하기 (좋아요 한글만 조회 어떻게? => 해결)
     - 제일 좋아요가 많은 게시글을 맨 위에 정렬하기 (좋아요 순으로 정렬 어떻게? => 해결)
 
-##이번주차 ERD
+### 이번주차 ERD
 
 https://drawsql.app/teams/hanghae999th/diagrams/week4-project/embed
 ![week4_project_ERD](https://user-images.githubusercontent.com/113868764/195555699-3bffc6ff-973b-49bd-90c5-1104e973efbb.png)
