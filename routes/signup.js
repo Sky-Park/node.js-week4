@@ -31,7 +31,7 @@ router.post("/", async (req, res) => {
     })
 
     const validPw = await Joi.object().keys({
-        password : Joi.string().alphanum().min(4).invalid({nickname})
+        password : Joi.string().alphanum().min(4).invalid(`${nickname}`)
     })
    
 

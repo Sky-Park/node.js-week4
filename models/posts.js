@@ -41,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     likesCount: {
       type: DataTypes.INTEGER,
-      defaultValue : 0,
+      defaultValue: 0,
     },
     createdAt: {
       allowNull: false,

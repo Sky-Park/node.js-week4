@@ -116,13 +116,13 @@ router.put("/:postId/like", authMiddleware, async (req, res) => {
     //좋아요한 기록이 있는경우 좋아요 게시글에 좋아요 카운트 감소 및 좋아요 기록 삭제
     if (!userlike) {
 
-        await postLikeOne.increment({likesCount: 1}, {where : { postId, userId }})
+        await postLikeOne.increment({likesCount: 1}, {where : { postId }})
         await likes.create({userId, postId})
         res.json({"message": "게시글에 좋아요를 등록하였습니다."})
 
     } else {
 
-        await postLikeOne.increment({likesCount: -1}, {where: {postId, userId}})
+        await postLikeOne.increment({likesCount: -1}, {where: { postId }})
         await likes.destroy({where: {userId, postId}})
         res.json({"message": "게시글에 좋아요를 취소하였습니다."})
 
